@@ -1,28 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { render } from "react-dom";
 
-const Main: React.FC = () => {
-  const [state, setState] = useState(0);
-  return React.createElement(
-    "button",
-    { onClick: () => setState(state + 1) },
-    state
-  );
+const h = React.createElement;
+
+const Sub = () => {
+  console.log("render sub");
+  return h("div", undefined, "ok");
+};
+const Main = () => {
+  const [one, setOne] = useState("one");
+  const two = useState("two");
+  const three = useState("three");
+  console.log("render main");
+  useEffect(() => {
+    const interval = setInterval(() => setOne(one + 1), 5000);
+    return () => clearInterval(interval); // < Do not forget this
+  }, [one]);
+
+  return h("div", undefined, one);
 };
 
-render(React.createElement(Main), document.getElementById("main"));
-
-function createElement(): { type: ComponentClass } {}
-
-let renderingState = {
-  dispatcher: null, // the type of dispatcher to use (firstMount, update, error ....)
-  component: null, // the current element being rendered
-  hook: null, // the current hook being rendered
-}
-function useStateCustom() {
-  return [memoizedState];
-}
-function renderCustom({ type: ComponentClass }) {
-  currentDispatcher = () => updateComponent(); // TODO
-  Component(); // Will call useState and read the currentDispatcher
-}
+render(h(Main), document.getElementById("main"));
